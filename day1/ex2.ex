@@ -31,13 +31,18 @@ defmodule Day1 do
   end
 
   def locations(list) do
-    Enum.reduce(list, [{:N, 0, 0}], &coordinates/2) 
+    Enum.reduce(list, [{:N, 0, 0}], fn code, acc -> 
+      { d, blocks} = String.split_at(code, 1)
+      last = List.last(acc)
+      [_ | tail] = calc(last, d, String.to_integer(blocks))
+      acc ++ tail
+    end) 
   end
 
   def repeated(list) do
     locations(list)
     |> Enum.reduce_while([], fn({_, x, y}, acc) ->
-      if Enum.member?(acc, {x, y}), do: {:halt, {x, y}}, else: {:cont, acc ++ [{x, y}]}
+      if Enum.member?(acc, {x, y}), do: {:halt, {x, y}}, else: {:cont,[{x, y} | acc]}
     end)
   end
 
