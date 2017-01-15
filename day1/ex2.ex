@@ -14,22 +14,6 @@ defmodule Day1 do
   def calc({:W, x, y}, "R", blocks), do: gen_coords(:N, x, y, 0, blocks)
   def calc({:W, x, y}, "L", blocks), do: gen_coords(:S, x, y, 0, -blocks)
 
-  #  def calc({"N", x, y}, "R", blocks), do: {"E", x + blocks, y}  
-  #  def calc({"N", x, y}, "L", blocks), do: {"W", x - blocks, y}
-  #  def calc({"S", x, y}, "R", blocks), do: {"W", x - blocks, y}
-  #  def calc({"S", x, y}, "L", blocks), do: {"E", x + blocks, y}
-  #  def calc({"E", x, y}, "R", blocks), do: {"S", x, y - blocks}
-  #  def calc({"E", x, y}, "L", blocks), do: {"N", x, y + blocks}
-  #  def calc({"W", x, y}, "R", blocks), do: {"N", x, y + blocks}
-  #  def calc({"W", x, y}, "L", blocks), do: {"S", x, y - blocks}
-
-  def coordinates(code, acc) do
-    { d, blocks} = String.split_at(code, 1)
-    last = List.last(acc)
-    [_ | tail] = calc(last, d, String.to_integer(blocks))
-    acc ++ tail
-  end
-
   def locations(list) do
     Enum.reduce(list, [{:N, 0, 0}], fn code, acc -> 
       { d, blocks} = String.split_at(code, 1)
