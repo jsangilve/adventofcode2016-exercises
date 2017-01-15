@@ -43,10 +43,11 @@ defmodule Day2 do
 
   @spec get_code(String.t) :: String.t
   def get_code(codes) do
-    parse(codes)
-    |> Enum.map(fn ln -> Enum.reduce(ln, {0, 0}, &decode/2) end)
-    |> Enum.map(&keypad/1)
-    |> Enum.join
+    {positions, _} = parse(codes) |> Enum.map_reduce({0,0}, fn ln, acc -> 
+      current = Enum.reduce(ln, acc, &decode/2) 
+      {current, current} 
+    end)
+    Enum.reduce(positions, "", fn p, acc -> acc <> keypad(p) end)
   end
 
 end
