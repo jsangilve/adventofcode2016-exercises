@@ -30,13 +30,11 @@ defmodule Day4 do
   @spec decode_room(list) :: map
   defp decode_room(room) do
     [name, sector, checksum ] = String.split(room, ~r{[0-9]+}, [include_captures: true, trim: true])
-    #    sector_id = String.to_integer(sector)
     clean_name = String.replace(name, "-", " ", trim: true)
     %{
     #      name: clean_name |> String.graphemes |> decipher(sector_id),
       name: clean_name,
       decoded_checksum: decode_checksum(name),
-      #      sector: sector_id,
       sector: String.to_integer(sector),
       checksum: checksum,
     }
@@ -60,10 +58,9 @@ defmodule Day4 do
   defp decipher([], _, word), do: word
 
   defp shift_cipher(" ", _), do: " "
-  defp shift_cipher(letter, shifts) do
-    <<index, _>> = letter <> <<0>>
-    letter_index = ?a..?z |> Enum.find_index(&(&1 == index))
-    << ?a..?z |> Enum.at(rem(letter_index + shifts, 26))>>
+  defp shift_cipher(<<letter>>, shifts) do
+    index = ?a..?z |> Enum.find_index(&(&1 == letter))
+    << ?a..?z |> Enum.at(rem(index + shifts, 26))>>
   end
 
   @spec sum_sectors(list) :: list
@@ -77,16 +74,15 @@ defmodule Day4 do
   @doc """
 
   """
-  @spec north_pole_sector(list) :: integer
-  def north_pole_sector(data) do
-    room = rooms(data)
+  @spec north_pole_room(list) :: map
+  def north_pole_room(data) do
+    rooms(data)
     |> Enum.find(fn %{name: name, sector: sector} -> 
          name 
          |> String.graphemes
          |> decipher(sector)
          |> String.starts_with?("north") 
     end)
-    room[:sector]
   end
 end
 
@@ -95,7 +91,9 @@ filename = case System.argv do
   [file] -> file
 end
 
+
 data = File.read!(filename) |> String.split("\n", trim: true)
+
 IO.puts "Sector ID sum: #{Day4.sum_sectors(data)}"
-#IO.inspect Day4.north_pole(data), limit: 10000
-IO.puts "North Pole Sector Id: #{Day4.north_pole_sector(data)}"
+northpole_room = Day4.north_pole_room(data)
+IO.puts "North Pole Sector Id: #{northpole_room.sector}"
